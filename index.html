@@ -178,26 +178,29 @@
         }
 
         /* 
-           POSITIONING:
-           Left: 39%
-           Top: 48.5%
+           FIXED POSITIONING FOR ARABIC:
+           Using 'right' instead of 'left' ensures proper alignment.
+           Based on your image, the name should be to the right of the logo.
         */
         .student-name {
             position: absolute;
-            top: 48.5%;
-            left: 39%;
-            transform: translate(-50%, -50%);
-            font-size: 28px;
-            font-weight: bold;
+            top: 48%; /* Adjusted slightly up */
+            right: 28%; /* Position from Right edge */
+            transform: translateY(-50%); /* Only center vertically */
+            
+            font-size: 26px; /* Slightly adjusted size */
+            font-weight: 700;
             color: #0097D3;
-            max-width: 300px;
-            text-align: center;
-            letter-spacing: 1px;
-            word-wrap: normal;
-            z-index: 10;
-            line-height: 1.2;
+            
+            max-width: 350px;
+            text-align: right; /* Align text to right */
+            
+            /* CRITICAL FOR ARABIC LIGATURES */
             font-family: 'Cairo', sans-serif;
-            white-space: nowrap; /* Prevent breaking lines */
+            letter-spacing: normal;
+            font-feature-settings: "liga" 1, "dlig" 1; 
+            white-space: nowrap;
+            z-index: 10;
         }
 
         .info-text {
@@ -251,7 +254,6 @@
         @media (max-width: 768px) {
             .container { padding: 25px; }
             h1 { font-size: 22px; }
-            /* Responsive font size only for preview */
             .student-name { font-size: 2.5vw; } 
             button { padding: 10px 25px; font-size: 14px; }
         }
@@ -260,7 +262,6 @@
 <body>
     <div class="container">
         <div class="header-section">
-            <!-- Header Image: Header.png -->
             <img src="images/Header.png" 
                  alt="AIPioneers Header" 
                  class="header-image" 
@@ -288,7 +289,6 @@
 
         <div class="preview-section" id="previewSection">
             <div class="certificate-container" id="certificateContent">
-                <!-- Certificate Image: Cerifiacte.svg -->
                 <img src="images/Cerifiacte.svg" 
                      alt="Certificate" 
                      class="certificate-image" 
@@ -300,7 +300,6 @@
             
             <p class="info-text">اضغط على زر التحميل لحفظ الشهادة / Click the download button to save your certificate</p>
             
-            <!-- Fallback mechanism -->
             <div class="image-helper" onclick="document.getElementById('hiddenFileInput').click()" title="Upload certificate image manually">
                 ⬆️ الشهادة لم تُحمل؟ انقر هنا لتحميلها يدويًا / Certificate didn't load? Click here
             </div>
@@ -360,7 +359,6 @@
             });
         }
 
-        // --- NEW: High-Resolution Capture Function ---
         async function downloadCertificate() {
             const fullName = studentNameInput.value;
             if (!validateName(fullName)) {
@@ -375,63 +373,61 @@
                  return;
             }
 
-            // 1. Loading State
             const originalText = downloadBtn.textContent;
             downloadBtn.textContent = "⏳ جاري المعالجة... / Processing...";
             downloadBtn.disabled = true;
             previewBtn.disabled = true;
 
-            // 2. Create a temporary High-Res container (off-screen)
-            // This fixes the cropping and font size issues
+            // 1. Create High-Res Container
             const container = document.createElement('div');
             container.style.position = 'fixed';
             container.style.left = '-9999px';
             container.style.top = '0';
-            container.style.width = '2000px'; // Force High Width (High Quality)
+            container.style.width = '2000px'; 
             container.style.zIndex = '-1';
             document.body.appendChild(container);
 
-            // 3. Clone the certificate content
+            // 2. Clone Content
             const originalCert = document.getElementById('certificateContent');
             const clone = originalCert.cloneNode(true);
             
-            // 4. Force styles on clone for perfect capture
             clone.style.width = '100%';
             clone.style.height = 'auto';
             clone.style.maxWidth = 'none';
             clone.style.borderRadius = '0';
             
-            // Fix Image in clone
             const cloneImg = clone.querySelector('.certificate-image');
             cloneImg.style.width = '100%';
             cloneImg.style.height = 'auto';
             
-            // Fix Name in clone (Scale up font for 2000px width)
+            // 3. Fix Text Scaling & Font
             const cloneText = clone.querySelector('.student-name');
-            // Calculation: 28px on 800px width ≈ 70px on 2000px width
-            cloneText.style.fontSize = '70px'; 
-            cloneText.style.width = '100%';
-            cloneText.style.whiteSpace = 'nowrap';
+            // Calculation: 26px on 800px width ≈ 65px on 2000px width
+            cloneText.style.fontSize = '65px'; 
+            // Fix Arabic Alignment in clone
+            cloneText.style.top = '48%';
+            cloneText.style.right = '28%';
+            cloneText.style.transform = 'translateY(-50%)';
+            // Important: Force font again for capture
+            cloneText.style.fontFamily = "'Cairo', sans-serif";
             
-            // Add clone to container
             container.appendChild(clone);
 
-            // 5. Capture
+            // 4. Capture with Options optimized for text
             html2canvas(container, {
-                scale: 1, // Already scaled by container width
+                scale: 1, 
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                allowTaint: true
+                allowTaint: true,
+                letterRendering: true // Try to improve text rendering
             }).then(canvas => {
-                // 6. Download
                 const image = canvas.toDataURL("image/png", 1.0);
                 const link = document.createElement('a');
                 link.download = `Certificate_${fullName.replace(/\s+/g, '_')}.png`;
                 link.href = image;
                 link.click();
 
-                // Cleanup
                 document.body.removeChild(container);
                 downloadBtn.textContent = originalText;
                 downloadBtn.disabled = false;
