@@ -178,29 +178,30 @@
         }
 
         /* 
-           FIXED POSITIONING FOR ARABIC:
-           Using 'right' instead of 'left' ensures proper alignment.
-           Based on your image, the name should be to the right of the logo.
+           RESTORED ORIGINAL CENTER POSITIONING:
+           Left: 39%
+           Top: 48.5%
         */
         .student-name {
             position: absolute;
-            top: 48%; /* Adjusted slightly up */
-            right: 28%; /* Position from Right edge */
-            transform: translateY(-50%); /* Only center vertically */
+            top: 48.5%;
+            left: 39%;
+            transform: translate(-50%, -50%);
             
-            font-size: 26px; /* Slightly adjusted size */
+            font-size: 28px;
             font-weight: 700;
             color: #0097D3;
             
             max-width: 350px;
-            text-align: right; /* Align text to right */
+            text-align: center; /* Center align text */
             
-            /* CRITICAL FOR ARABIC LIGATURES */
+            /* ARABIC FIXES */
             font-family: 'Cairo', sans-serif;
             letter-spacing: normal;
             font-feature-settings: "liga" 1, "dlig" 1; 
             white-space: nowrap;
             z-index: 10;
+            line-height: 1.2;
         }
 
         .info-text {
@@ -400,27 +401,27 @@
             cloneImg.style.width = '100%';
             cloneImg.style.height = 'auto';
             
-            // 3. Fix Text Scaling & Font
+            // 3. Fix Text Positioning for Clone
             const cloneText = clone.querySelector('.student-name');
-            // Calculation: 26px on 800px width ≈ 65px on 2000px width
-            cloneText.style.fontSize = '65px'; 
-            // Fix Arabic Alignment in clone
-            cloneText.style.top = '48%';
-            cloneText.style.right = '28%';
-            cloneText.style.transform = 'translateY(-50%)';
-            // Important: Force font again for capture
+            // Scale font size (28px -> 70px)
+            cloneText.style.fontSize = '70px'; 
+            // RESTORE ORIGINAL POSITION
+            cloneText.style.top = '48.5%';
+            cloneText.style.left = '39%';
+            cloneText.style.right = 'auto'; // Reset right
+            cloneText.style.transform = 'translate(-50%, -50%)';
+            // Force Font
             cloneText.style.fontFamily = "'Cairo', sans-serif";
             
             container.appendChild(clone);
 
-            // 4. Capture with Options optimized for text
+            // 4. Capture
             html2canvas(container, {
                 scale: 1, 
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                allowTaint: true,
-                letterRendering: true // Try to improve text rendering
+                allowTaint: true
             }).then(canvas => {
                 const image = canvas.toDataURL("image/png", 1.0);
                 const link = document.createElement('a');
