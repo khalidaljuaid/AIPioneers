@@ -178,7 +178,7 @@
         }
 
         /* 
-           RESTORED ORIGINAL CENTER POSITIONING:
+           PREVIEW POSITION (Looks perfect on screen):
            Left: 39%
            Top: 48.5%
         */
@@ -193,7 +193,7 @@
             color: #0097D3;
             
             max-width: 350px;
-            text-align: center; /* Center align text */
+            text-align: center;
             
             /* ARABIC FIXES */
             font-family: 'Cairo', sans-serif;
@@ -401,16 +401,15 @@
             cloneImg.style.width = '100%';
             cloneImg.style.height = 'auto';
             
-            // 3. Fix Text Positioning for Clone
+            // 3. FIX: Adjust Clone Position (Compensate for shift)
             const cloneText = clone.querySelector('.student-name');
-            // Scale font size (28px -> 70px)
             cloneText.style.fontSize = '70px'; 
-            // RESTORE ORIGINAL POSITION
+            
+            // ADJUSTMENT: Moved from 39% to 41% to fix left shift
+            cloneText.style.left = '41%'; 
             cloneText.style.top = '48.5%';
-            cloneText.style.left = '39%';
-            cloneText.style.right = 'auto'; // Reset right
             cloneText.style.transform = 'translate(-50%, -50%)';
-            // Force Font
+            
             cloneText.style.fontFamily = "'Cairo', sans-serif";
             
             container.appendChild(clone);
