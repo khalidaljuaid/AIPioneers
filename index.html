@@ -178,7 +178,7 @@
         }
 
         /* 
-           PREVIEW POSITION (Looks perfect on screen):
+           PREVIEW POSITION:
            Left: 39%
            Top: 48.5%
         */
@@ -195,7 +195,6 @@
             max-width: 350px;
             text-align: center;
             
-            /* ARABIC FIXES */
             font-family: 'Cairo', sans-serif;
             letter-spacing: normal;
             font-feature-settings: "liga" 1, "dlig" 1; 
@@ -233,23 +232,6 @@
 
         .success-message.active {
             display: block;
-        }
-
-        .image-helper {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #0097D3;
-            cursor: pointer;
-            text-decoration: underline;
-            transition: color 0.3s ease;
-        }
-        
-        .image-helper:hover {
-            color: #2a3a8a;
-        }
-        
-        #hiddenFileInput {
-            display: none;
         }
 
         @media (max-width: 768px) {
@@ -300,11 +282,6 @@
             </div>
             
             <p class="info-text">اضغط على زر التحميل لحفظ الشهادة / Click the download button to save your certificate</p>
-            
-            <div class="image-helper" onclick="document.getElementById('hiddenFileInput').click()" title="Upload certificate image manually">
-                ⬆️ الشهادة لم تُحمل؟ انقر هنا لتحميلها يدويًا / Certificate didn't load? Click here
-            </div>
-            <input type="file" id="hiddenFileInput" accept="image/*" onchange="replaceImage(this)">
         </div>
     </div>
 
@@ -401,11 +378,11 @@
             cloneImg.style.width = '100%';
             cloneImg.style.height = 'auto';
             
-            // 3. FIX: Adjust Clone Position (Compensate for shift)
+            // 3. Fix Text Positioning for Clone
             const cloneText = clone.querySelector('.student-name');
             cloneText.style.fontSize = '70px'; 
             
-            // ADJUSTMENT: Moved from 39% to 41% to fix left shift
+            // ADJUSTMENT: Center corrected to compensate for shift
             cloneText.style.left = '41%'; 
             cloneText.style.top = '48.5%';
             cloneText.style.transform = 'translate(-50%, -50%)';
@@ -440,16 +417,6 @@
                 downloadBtn.disabled = false;
                 previewBtn.disabled = false;
             });
-        }
-
-        function replaceImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    certImage.src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
         }
         
         function handleImageError(img, type) {
